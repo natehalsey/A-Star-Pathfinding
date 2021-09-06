@@ -1,3 +1,16 @@
+/*
+
+Send data from mainframe to solve to begin solve process
+MainFrame -> Solve
+
+At every move, repaint the mainframe
+MainFrame <- Solve
+
+
+
+*/
+
+
 import java.util.*;
 public class Solve {
     private Point start;
@@ -5,15 +18,10 @@ public class Solve {
 
     Stack<Point> path;
 
-    private class Point{
-        private int x_coord;
-        private int y_coord;
-
-        public Point(int x_coord, int y_coord){
-            this.x_coord = x_coord;
-            this.y_coord = y_coord;
-        }
-
+    public Solve(Point start, Point end){
+        this.start = start;
+        this.end = end;
     }
+
     
 }
