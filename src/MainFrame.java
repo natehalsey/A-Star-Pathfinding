@@ -123,9 +123,9 @@ public class MainFrame extends JFrame{
             menu.add(newMenu);
             menu.add(clearLines);
 
-            MenuListeners();
+            menuListeners();
         }
-        private void MenuListeners(){
+        private void menuListeners(){
             newMenu.addActionListener(new ActionListener(){
                 @Override
                 public void actionPerformed(ActionEvent e){
