@@ -43,7 +43,7 @@ public class MainFrame extends JFrame{
             setLayout(null);
             setVisible(true);
             init_arrays();
-            mouseListener();
+            mouseListeners();
 
         }
         private void init_arrays(){
@@ -67,7 +67,7 @@ public class MainFrame extends JFrame{
         }
         // issues: can fill the same spot twice, mouse needs to be dragged to fill square current during start/end,
         // start / end not unique and we won't be able to differentiate during the solve process
-        public void mouseListener(){
+        public void mouseListeners(){
             addMouseMotionListener(new MouseInputAdapter(){
                 public void mouseDragged(MouseEvent me){
                     if (points.size() == 2){
@@ -78,12 +78,19 @@ public class MainFrame extends JFrame{
                                 repaint();
                             }
                         }
-                    } else {
+                    }
+                }
+            });
+            addMouseListener(new MouseAdapter(){
+                public void mousePressed(MouseEvent me){
+                    if (points.size() < 2){
                         for (int i = 0; i < grid.size(); i++){
                             Shape shape = grid.get(i);
                             if (shape.contains(me.getPoint())){
-                                points.add(shape);
-                                repaint();
+                                if (!points.contains(shape)){
+                                    points.add(shape);
+                                    repaint();
+                                }
                             }
                         }
                     }
