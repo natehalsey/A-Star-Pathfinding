@@ -1,8 +1,4 @@
 import javax.swing.*;
-import javax.swing.event.*;
-
-import java.util.*;
-import java.awt.*;
 import java.awt.event.*;
 public class MainFrame extends JFrame{
     private final int RECTANGLE_WIDTH = 10;
@@ -12,10 +8,6 @@ public class MainFrame extends JFrame{
 
     private final int width = RECTANGLE_COUNT_X*RECTANGLE_WIDTH;
     private final int height = RECTANGLE_COUNT_Y*RECTANGLE_HEIGHT;
-
-    private ArrayList<Shape> grid;
-    private ArrayList<Shape> lines;
-    private ArrayList<Shape> points;
 
     private MainPanel main;
     private JMenuBar menuBar;
@@ -28,7 +20,7 @@ public class MainFrame extends JFrame{
 
     public MainFrame(){
 
-        main = new MainPanel();
+        main = new MainPanel(width,height);
         menuBar = new MenuBar();
 
         setJMenuBar(menuBar);
@@ -38,94 +30,7 @@ public class MainFrame extends JFrame{
         setVisible(true);
         setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        repaint();
     }
-    private class MainPanel extends JPanel{
-        public MainPanel(){
-            setSize(width,height);
-            setFocusable(true);
-            setLayout(null);
-            setVisible(true);
-            init_arrays();
-            mouseListeners();
-
-        }
-        private void init_arrays(){
-            grid  = new ArrayList<>(RECTANGLE_COUNT_X*RECTANGLE_COUNT_Y);
-            lines = new ArrayList<>(RECTANGLE_COUNT_X*RECTANGLE_COUNT_Y);
-            points = new ArrayList<>(RECTANGLE_COUNT_X*RECTANGLE_COUNT_Y);
-            for (int i = 0; i < RECTANGLE_COUNT_X; i++){
-                for (int j = 0; j < RECTANGLE_COUNT_Y; j++){
-                    grid.add(new Rectangle(i*RECTANGLE_WIDTH, j*RECTANGLE_HEIGHT, RECTANGLE_WIDTH, RECTANGLE_HEIGHT));
-                }
-            }
-        }
-        public void refreshBoard() {
-            lines.clear();
-            points.clear();
-            repaint();
-        }
-        public void removeLines() {
-            lines.clear();
-            repaint();
-        }
-        public void mouseListeners(){
-            addMouseMotionListener(new MouseInputAdapter(){
-                public void mouseDragged(MouseEvent me){
-                    if (points.size() == 2){
-                        for (int i = 0; i < grid.size(); i++){
-                            Shape shape = grid.get(i);
-                            if (shape.contains(me.getPoint())){
-                                lines.add(shape);
-                                repaint();
-                            }
-                        }
-                    }
-                }
-            });
-            addMouseListener(new MouseAdapter(){
-                public void mousePressed(MouseEvent me){
-                    if (points.size() < 2){
-                        for (int i = 0; i < grid.size(); i++){
-                            Shape shape = grid.get(i);
-                            if (shape.contains(me.getPoint())){
-                                if (!points.contains(shape)){
-                                    if (points.size() == 0){
-                                        start = new Point(me.getX()/RECTANGLE_WIDTH,me.getY()/RECTANGLE_HEIGHT);
-                                    } else {
-                                        end = new Point(me.getX()/RECTANGLE_WIDTH,me.getY()/RECTANGLE_HEIGHT);
-                                    }
-                                    points.add(shape);
-                                    repaint();
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
-        @Override
-        public void paintComponent(Graphics g){
-            super.paintComponent(g);
-            Graphics2D g2d = (Graphics2D) g;
-            g2d.setColor(Color.gray);
-            for (Shape cell : lines){
-                g2d.fill(cell);
-            }
-            g2d.setColor(Color.green);
-            for (Shape cell : points){
-                g2d.fill(cell);
-            }
-            g2d.setColor(Color.black);
-            for (int i = 0; i < RECTANGLE_COUNT_X; i++){
-                for (int j = 0; j < RECTANGLE_COUNT_Y; j++){
-                    g2d.drawRect(i*RECTANGLE_WIDTH, j*RECTANGLE_HEIGHT, RECTANGLE_WIDTH, RECTANGLE_HEIGHT);
-                }
-            }
-        }
-
-    }
-    // Menu items go here
     private class MenuBar extends JMenuBar{
         public MenuBar(){
             JMenu menu = new JMenu("Menu");
@@ -159,7 +64,7 @@ public class MainFrame extends JFrame{
                 public void actionPerformed(ActionEvent e){
                     //solve
                     if (start != null && end != null){
-                        new Solve(start, end);
+                        new Solve(main, start, end, RECTANGLE_COUNT_X, RECTANGLE_COUNT_Y);
                     }
                 }
             });
