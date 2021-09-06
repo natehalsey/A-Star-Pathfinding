@@ -21,6 +21,10 @@ public class MainFrame extends JFrame{
     private JMenuBar menuBar;
     private JMenuItem newMenu;
     private JMenuItem clearLines;
+    private JMenuItem solveMenu;
+
+    private Point start;
+    private Point end;
 
     public MainFrame(){
 
@@ -65,8 +69,6 @@ public class MainFrame extends JFrame{
             lines.clear();
             repaint();
         }
-        // issues: can fill the same spot twice, mouse needs to be dragged to fill square current during start/end,
-        // start / end not unique and we won't be able to differentiate during the solve process
         public void mouseListeners(){
             addMouseMotionListener(new MouseInputAdapter(){
                 public void mouseDragged(MouseEvent me){
@@ -88,6 +90,11 @@ public class MainFrame extends JFrame{
                             Shape shape = grid.get(i);
                             if (shape.contains(me.getPoint())){
                                 if (!points.contains(shape)){
+                                    if (points.size() == 0){
+                                        start = new Point(me.getX()/RECTANGLE_WIDTH,me.getY()/RECTANGLE_HEIGHT);
+                                    } else {
+                                        end = new Point(me.getX()/RECTANGLE_WIDTH,me.getY()/RECTANGLE_HEIGHT);
+                                    }
                                     points.add(shape);
                                     repaint();
                                 }
@@ -105,7 +112,7 @@ public class MainFrame extends JFrame{
             for (Shape cell : lines){
                 g2d.fill(cell);
             }
-            g2d.setColor(Color.red);
+            g2d.setColor(Color.green);
             for (Shape cell : points){
                 g2d.fill(cell);
             }
@@ -126,9 +133,11 @@ public class MainFrame extends JFrame{
 
             newMenu = new JMenuItem("New Game");
             clearLines = new JMenuItem("Clear Lines");
+            solveMenu = new JMenuItem("Solve");
 
             menu.add(newMenu);
             menu.add(clearLines);
+            menu.add(solveMenu);
 
             menuListeners();
         }
@@ -143,6 +152,15 @@ public class MainFrame extends JFrame{
                 @Override
                 public void actionPerformed(ActionEvent e){
                     main.removeLines();
+                }
+            });
+            solveMenu.addActionListener(new ActionListener(){
+                @Override
+                public void actionPerformed(ActionEvent e){
+                    //solve
+                    if (start != null && end != null){
+                        new Solve(start, end);
+                    }
                 }
             });
         }
