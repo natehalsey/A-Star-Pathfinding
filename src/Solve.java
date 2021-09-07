@@ -60,7 +60,9 @@ public class Solve {
             return false;
         }
         openSet.remove(current);
-        closedSet.add(current);
+        if (current.getGScore() != 0){
+            closedSet.add(current);
+        }
 
         ArrayList<Point> neighbours = getNeighbours(current);
         if (neighbours.size() == 0){
