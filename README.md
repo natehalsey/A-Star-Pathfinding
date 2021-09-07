@@ -6,3 +6,5 @@ This was my labour day weekend project to grind out before school started!
 
 
 I decided to use Java to easily get the GUI working, so I could focus more on the actual algorithm.
+
+![A demonstration](solve.gif)
