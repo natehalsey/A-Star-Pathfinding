@@ -22,7 +22,7 @@ public class MainFrame extends JFrame{
 
         setJMenuBar(menuBar);
         add(main);
-        setSize(width,height);
+        setSize(width,height+50);
         setLayout(null);
         setVisible(true);
         setResizable(false);
