@@ -59,8 +59,6 @@ public class MainFrame extends JFrame{
             solveMenu.addActionListener(new ActionListener(){
                 @Override
                 public void actionPerformed(ActionEvent e){
-                    //solve
-                    System.out.println("Clicked solve");
                     main.Solve();
                 }
             });
