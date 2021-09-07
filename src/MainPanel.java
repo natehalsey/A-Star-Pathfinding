@@ -6,13 +6,10 @@ import java.awt.event.*;
 public class MainPanel extends JPanel{
 
 
-    private final int RECTANGLE_WIDTH = 10;
-    private final int RECTANGLE_HEIGHT = 10;
-    private final int RECTANGLE_COUNT_X = 60;
-    private final int RECTANGLE_COUNT_Y = 60;
-
-    private final int width = RECTANGLE_COUNT_X*RECTANGLE_WIDTH;
-    private final int height = RECTANGLE_COUNT_Y*RECTANGLE_HEIGHT;
+    private final int RECTANGLE_WIDTH = 20;
+    private final int RECTANGLE_HEIGHT = 20;
+    private final int RECTANGLE_COUNT_X = 30;
+    private final int RECTANGLE_COUNT_Y = 30;
 
     private ArrayList<Shape> grid;
     private ArrayList<Shape> lines;
@@ -20,6 +17,8 @@ public class MainPanel extends JPanel{
     private ArrayList<Shape> closedNodes;
     private ArrayList<Shape> openNodes;
     private ArrayList<Shape> pathNodes;
+
+    private ArrayList<Integer> blockers;
 
     private Point start;
     private Point end;
@@ -34,43 +33,32 @@ public class MainPanel extends JPanel{
 
     }
     private void init_arrays(){
+
         grid  = new ArrayList<>(RECTANGLE_COUNT_X*RECTANGLE_COUNT_Y);
         lines = new ArrayList<>(RECTANGLE_COUNT_X*RECTANGLE_COUNT_Y);
         points = new ArrayList<>(RECTANGLE_COUNT_X*RECTANGLE_COUNT_Y);
         openNodes = new ArrayList<>(RECTANGLE_COUNT_X*RECTANGLE_COUNT_Y);
         closedNodes = new ArrayList<>(RECTANGLE_COUNT_X*RECTANGLE_COUNT_Y);
         pathNodes = new ArrayList<>(RECTANGLE_COUNT_X*RECTANGLE_COUNT_Y);
+        blockers = new ArrayList<>(RECTANGLE_COUNT_X*RECTANGLE_COUNT_Y);
+
         for (int i = 0; i < RECTANGLE_COUNT_X; i++){
             for (int j = 0; j < RECTANGLE_COUNT_Y; j++){
                 grid.add(new Rectangle(i*RECTANGLE_WIDTH, j*RECTANGLE_HEIGHT, RECTANGLE_WIDTH, RECTANGLE_HEIGHT));
             }
         }
     }
-    public void updatePath(Stack<Point> path){
-        while (!path.empty()){
-            int coordinate = (path.peek().getY()*RECTANGLE_COUNT_X) + path.peek().getX();
-            pathNodes.add(grid.get(coordinate));
-            path.pop();
-        }
-        repaint();
-    }
-    public void updateClosed(Point point){
-        int coordinate = (point.getY()*RECTANGLE_COUNT_X) + point.getX();
-        closedNodes.add(grid.get(coordinate));
-        repaint();
-    }
-    public void updateOpen(Point point){
-        int coordinate = (point.getY()*RECTANGLE_COUNT_X) + point.getX();
-        openNodes.add(grid.get(coordinate));
-        repaint();
-        
-    }
     public void refreshBoard() {
         lines.clear();
         points.clear();
+        pathNodes.clear();
+        openNodes.clear();
+        closedNodes.clear();
+        blockers.clear();
         repaint();
     }
     public void removeLines() {
+        blockers.clear();
         lines.clear();
         repaint();
     }
@@ -82,6 +70,9 @@ public class MainPanel extends JPanel{
                         Shape shape = grid.get(i);
                         if (shape.contains(me.getPoint())){
                             lines.add(shape);
+                            if (end.getIndex() != i){
+                                blockers.add(i);
+                            }
                             repaint();
                         }
                     }
@@ -96,9 +87,9 @@ public class MainPanel extends JPanel{
                         if (shape.contains(me.getPoint())){
                             if (!points.contains(shape)){
                                 if (points.size() == 0){
-                                    start = new Point(me.getX()/RECTANGLE_WIDTH,me.getY()/RECTANGLE_HEIGHT);
+                                    start = new Point(i,me.getX()/RECTANGLE_WIDTH,me.getY()/RECTANGLE_HEIGHT);
                                 } else {
-                                    end = new Point(me.getX()/RECTANGLE_WIDTH,me.getY()/RECTANGLE_HEIGHT);
+                                    end = new Point(i,me.getX()/RECTANGLE_WIDTH,me.getY()/RECTANGLE_HEIGHT);
                                 }
                                 points.add(shape);
                                 repaint();
@@ -108,6 +99,43 @@ public class MainPanel extends JPanel{
                 }
             }
         });
+    }
+    public void Solve(){
+        Solve solver = new Solve(start,end,blockers,RECTANGLE_COUNT_X,RECTANGLE_COUNT_Y);
+        (new Thread() {
+            public void run(){
+                while (true){
+                    if(solver.makeMove()){
+                        ArrayList<Point> openSet = solver.getOpen();
+                        ArrayList<Point> closedSet = solver.getClosed();
+
+                        closedNodes.clear();
+                        openNodes.clear();
+
+                        for (int i = 0; i < openSet.size(); i++){
+                            openNodes.add(grid.get(openSet.get(i).getIndex()));
+                        }
+                        for (int i = 0; i < closedSet.size(); i++){
+                            closedNodes.add(grid.get(closedSet.get(i).getIndex()));
+                        }
+                        repaint();
+                        try {
+                            Thread.sleep(20);
+                        } 
+                        catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        ArrayList<Point> pathSet = solver.getPath();
+                        for (int i = 0; i < pathSet.size(); i++){
+                            pathNodes.add(grid.get(pathSet.get(i).getIndex()));
+                        }
+                        repaint();         
+                        break;
+                    }
+                }
+            }
+        }).start();
     }
     @Override
     public void paintComponent(Graphics g){
