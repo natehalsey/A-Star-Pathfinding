@@ -1,10 +1,10 @@
 import javax.swing.*;
 import java.awt.event.*;
 public class MainFrame extends JFrame{
-    private final int RECTANGLE_WIDTH = 20;
-    private final int RECTANGLE_HEIGHT = 20;
-    private final int RECTANGLE_COUNT_X = 30;
-    private final int RECTANGLE_COUNT_Y = 30;
+    private final int RECTANGLE_WIDTH = 15;
+    private final int RECTANGLE_HEIGHT = 15;
+    private final int RECTANGLE_COUNT_X = 40;
+    private final int RECTANGLE_COUNT_Y = 40;
 
     private final int width = RECTANGLE_COUNT_X*RECTANGLE_WIDTH;
     private final int height = RECTANGLE_COUNT_Y*RECTANGLE_HEIGHT;

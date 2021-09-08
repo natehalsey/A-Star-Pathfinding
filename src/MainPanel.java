@@ -6,10 +6,10 @@ import java.awt.event.*;
 public class MainPanel extends JPanel{
 
 
-    private final int RECTANGLE_WIDTH = 20;
-    private final int RECTANGLE_HEIGHT = 20;
-    private final int RECTANGLE_COUNT_X = 30;
-    private final int RECTANGLE_COUNT_Y = 30;
+    private final int RECTANGLE_WIDTH = 15;
+    private final int RECTANGLE_HEIGHT = 15;
+    private final int RECTANGLE_COUNT_X = 40;
+    private final int RECTANGLE_COUNT_Y = 40;
 
     private ArrayList<Shape> grid;
     private ArrayList<Shape> lines;
