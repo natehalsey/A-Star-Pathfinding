@@ -120,7 +120,7 @@ public class MainPanel extends JPanel{
                         }
                         repaint();
                         try {
-                            Thread.sleep(20);
+                            Thread.sleep(5);
                         } 
                         catch (InterruptedException e) {
                             e.printStackTrace();
