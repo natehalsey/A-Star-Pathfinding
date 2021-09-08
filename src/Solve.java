@@ -109,13 +109,22 @@ public class Solve {
     private ArrayList<Point> getNeighbours(Point point){
         ArrayList<Point> neighbours = new ArrayList<>();
         for (int i = point.getY()-1; i <= point.getY()+1; i++){
-            for (int j = point.getX()-1; j <= point.getX()+1; j++){
-                if ((j != -1) && j != width && i != -1 && i != height){
-                    Point current = points.get((j*width)+i);
-                    if(!current.equals(point) && !blockers.contains(current.getIndex())){
-                        current.setDScore(euclideanDistance(point, current));
-                        neighbours.add(current);
-                    }
+            int j = point.getX();
+            if (i != -1 && i != height && i != point.getY()){
+                Point current = points.get((j*width)+i);
+                if(!current.equals(point) && !blockers.contains(current.getIndex())){
+                    current.setDScore(euclideanDistance(point, current));
+                    neighbours.add(current);
+                }
+            }
+        }
+        for (int i = point.getX()-1; i <= point.getX()+1; i++){
+            int j = point.getY();
+            if (i != -1 && i != width && i != point.getX()){
+                Point current = points.get((i*width)+j);
+                if(!current.equals(point) && !blockers.contains(current.getIndex())){
+                    current.setDScore(euclideanDistance(point, current));
+                    neighbours.add(current);
                 }
             }
         }
